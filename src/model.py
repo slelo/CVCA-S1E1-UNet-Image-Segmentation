@@ -43,8 +43,10 @@ class DecoderBlock(nn.Module):
 
     def forward(self, x, skip):
         x = self.up(x)
+        # skip is the feature map from the encoder. The method torch.cat concatenates the feature maps.
+        # This concatenation is done along the channel dimension, and needed because the decoder
+        # needs the higher resolution feature maps from the encoder to generate the output.
         x = torch.cat([x, skip], dim=1)
-        x = self.conv(x)
         return x
 
 
