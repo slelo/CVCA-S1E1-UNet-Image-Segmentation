@@ -66,6 +66,8 @@ def main():
     # dataset
     # -------------
     full_dataset = CocoSegDataset(image_dir=image_dir, json_path=json_path)
+    # for debugging with one image overfit
+    tiny_dataset = torch.utils.data.Subset(full_dataset, [0])
 
     val_size = int(len(full_dataset)*val_ratio)
     train_size = len(full_dataset) - val_size
@@ -77,19 +79,36 @@ def main():
         generator=generator
     )
 
+    # train_loader = DataLoader(
+    #     train_dataset,
+    #     batch_size,
+    #     shuffle=True,
+    #     num_workers=0
+    # )
+    #
+    # val_loader = DataLoader(
+    #     val_dataset,
+    #     batch_size,
+    #     shuffle=False,
+    #     num_workers=0
+    # )
+
+
+    ##### debugging
     train_loader = DataLoader(
-        train_dataset,
-        batch_size,
-        shuffle=True,
-        num_workers=0
+        tiny_dataset,
+        batch_size=1,
+        shuffle=True
     )
 
     val_loader = DataLoader(
-        val_dataset,
-        batch_size,
-        shuffle=False,
-        num_workers=0
+        tiny_dataset,
+        batch_size=1,
+        shuffle=False
     )
+
+    num_epochs = 200
+    ##### end of debugging
 
     # -------------
     # model / loss / optimizer
@@ -116,7 +135,7 @@ def main():
         # save the best model
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), "best_model.pth")
+            torch.save(model.state_dict(), "checkpoint/best_model.pth")
             print("Saved best model")
 
 if __name__ == "__main__":
