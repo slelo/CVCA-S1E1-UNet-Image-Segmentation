@@ -6,6 +6,10 @@ from torch.optim import Adam
 from src.dataset import CocoSegDataset
 from src.model import UNet
 
+from pathlib import Path
+
+path = "../checkpoints"
+
 def train_one_epoch(model, loader, optimizer, criterion, device):
     model.train()
     running_loss = 0.0
@@ -16,12 +20,8 @@ def train_one_epoch(model, loader, optimizer, criterion, device):
         masks = masks.to(device)
 
         #forward
-        print("[TRAIN] BEFORE MODEL:", images.shape)
-        print("1:", images.shape)
-
         logits = model(images)
 
-        print("2:", logits.shape)
         loss = criterion(logits, masks)
 
         #backward
@@ -43,15 +43,10 @@ def validate_one_epoch(model, loader, criterion, device):
         images = images.to(device)
         masks = masks.to(device)
 
-        print("[VAL] BEFORE MODEL:", images.shape)
-        print("1:", images.shape)
-
         logits = model(images)
-
-        print("2:", logits.shape)
         loss =criterion(logits, masks)
 
-        running_loss += loss.item() * images.size()
+        running_loss += loss.item() * images.size(0)
 
     epoch_loss = running_loss / len(loader.dataset)
 
@@ -147,7 +142,8 @@ def main():
         # save the best model
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), "checkpoint/best_model.pth")
+            Path(path).mkdir(parents=True, exist_ok=True)
+            torch.save(model.state_dict(), path+"/best_model.pth")
             print("Saved best model")
 
 if __name__ == "__main__":

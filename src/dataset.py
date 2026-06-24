@@ -38,7 +38,7 @@ class CocoSegDataset(Dataset):
 
         # Load image
         image = cv2.imread(img_path)
-        print(image.shape)
+        # print(image.shape)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = image.astype(np.float32) / 255.0
 

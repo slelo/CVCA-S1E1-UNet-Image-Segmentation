@@ -10,7 +10,7 @@ class DoubleConv(nn.Module):
         self.net = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, 3, padding=1),
             nn.ReLU(inplace=True),
-            nn.Conv2d(in_channels, out_channels, 3, padding=1),
+            nn.Conv2d(out_channels, out_channels, 3, padding=1),
             nn.ReLU(inplace=True),
         )
 
@@ -21,6 +21,7 @@ class DoubleConv(nn.Module):
 class EncoderBlock(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
+
         # Convolutional layers
         self.conv = DoubleConv(in_channels, out_channels)
         # Max Pooling
@@ -36,10 +37,11 @@ class EncoderBlock(nn.Module):
 class DecoderBlock(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
+
         # Upsample by transposed convolution
         self.up = nn.ConvTranspose2d(in_channels, out_channels, 2, stride=2)
         # Convolutional layers
-        self.conv = DoubleConv(in_channels, out_channels)
+        self.conv = DoubleConv(out_channels * 2, out_channels)
 
     def forward(self, x, skip):
         x = self.up(x)
@@ -47,6 +49,8 @@ class DecoderBlock(nn.Module):
         # This concatenation is done along the channel dimension, and needed because the decoder
         # needs the higher resolution feature maps from the encoder to generate the output.
         x = torch.cat([x, skip], dim=1)
+
+        x = self.conv(x)
         return x
 
 
@@ -72,19 +76,19 @@ class UNet(nn.Module):
     # 3. Pass the output of the bottleneck through the decoder blocks
     # 4. Pass the output of the last decoder block through the output layer
     def forward(self, x):
-        print("INPUT:", x.shape)
 
         s1, p1 = self.enc1(x)
-        print("AFTER enc1:", x.shape)
-        # s1, p1 = self.enc1(x)
         s2, p2 = self.enc2(p1)
         s3, p3 = self.enc3(p2)
 
         b = self.bottleneck(p3)
 
-        # d2 and d3 take x as parameter, because:
+        # d2 and d3 take x as parameter
         d1 = self.dec1(b, s3)
-        d2 = self.dec2(x, s2)
-        d3 = self.dec3(x, s1)
+        d2 = self.dec2(d1, s2)
+        d3 = self.dec3(d2, s1)
 
-        return self.out()
+        # just for clarity
+        out = d3
+
+        return self.out(out)
