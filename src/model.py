@@ -8,7 +8,7 @@ class DoubleConv(nn.Module):
 
         # Convolutional layers where self.net is a sequential container of layers
         self.net = nn.Sequential(
-            nn.Conv2D(in_channels, out_channels, 3, padding=1),
+            nn.Conv2d(in_channels, out_channels, 3, padding=1),
             nn.ReLU(inplace=True),
             nn.Conv2d(in_channels, out_channels, 3, padding=1),
             nn.ReLU(inplace=True),
@@ -72,7 +72,11 @@ class UNet(nn.Module):
     # 3. Pass the output of the bottleneck through the decoder blocks
     # 4. Pass the output of the last decoder block through the output layer
     def forward(self, x):
+        print("INPUT:", x.shape)
+
         s1, p1 = self.enc1(x)
+        print("AFTER enc1:", x.shape)
+        # s1, p1 = self.enc1(x)
         s2, p2 = self.enc2(p1)
         s3, p3 = self.enc3(p2)
 

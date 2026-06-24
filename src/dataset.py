@@ -40,7 +40,7 @@ class CocoSegDataset(Dataset):
         image = cv2.imread(img_path)
         print(image.shape)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = image.astype(np.float32)
+        image = image.astype(np.float32) / 255.0
 
         # Get image size
         H, W = img_info['height'], img_info['width']

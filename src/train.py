@@ -11,11 +11,17 @@ def train_one_epoch(model, loader, optimizer, criterion, device):
     running_loss = 0.0
 
     for images, masks in loader:
+
         images = images.to(device)
         masks = masks.to(device)
 
         #forward
+        print("[TRAIN] BEFORE MODEL:", images.shape)
+        print("1:", images.shape)
+
         logits = model(images)
+
+        print("2:", logits.shape)
         loss = criterion(logits, masks)
 
         #backward
@@ -37,7 +43,12 @@ def validate_one_epoch(model, loader, criterion, device):
         images = images.to(device)
         masks = masks.to(device)
 
+        print("[VAL] BEFORE MODEL:", images.shape)
+        print("1:", images.shape)
+
         logits = model(images)
+
+        print("2:", logits.shape)
         loss =criterion(logits, masks)
 
         running_loss += loss.item() * images.size()
@@ -50,7 +61,7 @@ def main():
     # -------------
     # config
     # -------------
-    image_dir = ".../data/train/images"
+    image_dir = "../data/train/images"
     json_path = "../data/train/train.json"
 
     batch_size = 8
@@ -109,6 +120,7 @@ def main():
 
     num_epochs = 200
     ##### end of debugging
+
 
     # -------------
     # model / loss / optimizer
