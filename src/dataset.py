@@ -34,6 +34,8 @@ class CocoSegDataset(Dataset):
         img_id = img_info['id']
 
         file_name = img_info['file_name']
+        # print("dataset.py - filename: ", file_name)
+
         img_path = os.path.join(self.image_dir, file_name)
 
         # Load image
