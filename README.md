@@ -4,6 +4,8 @@ This project is a beginner-friendly computer vision pipeline for the Kaggle **Se
 
 The dataset contains 160×160 images and COCO-style polygon annotations stored in a JSON file. The polygons are converted into binary masks, where vehicle pixels are labeled as `1` and background pixels as `0`.
 
+![img.png](img.png)
+
 ## Project Structure
 
 ```text
