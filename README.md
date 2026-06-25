@@ -1,3 +1,8 @@
+# About
+This repository is part of the second episode of my newly started Computer Vision Code-Along blog post series. <br>
+
+*Still working on this one*
+
 # Segment Vehicle LiDAR - U-Net Baseline
 
 This project is a beginner-friendly computer vision pipeline for the Kaggle **Segment Vehicle LiDAR** competition. The goal is to detect vehicles in LiDAR-derived image tiles using semantic segmentation.
