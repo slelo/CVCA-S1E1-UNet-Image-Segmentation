@@ -1,7 +1,6 @@
 import os
 import json
 import numpy as np
-import pandas as pd
 import cv2
 import torch
 from torch.utils.data import Dataset
