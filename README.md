@@ -98,3 +98,10 @@ Possible next improvements:
 * learning rate scheduling
 * better validation analysis
 * Kaggle submission generation with RLE encoding
+
+## License
+
+This project is licensed under the MIT License.  
+You are free to use, modify, and learn from the code with attribution.
+
+Educational explanations, diagrams, and written materials may be reused with attribution.
