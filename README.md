@@ -1,7 +1,9 @@
 # About
+🚧UNDER CONSTRUCTION🚧 <br>
 This repository is part of the second episode of my newly started Computer Vision Code-Along blog post series. <br>
 
-*Still working on this one*
+Until the this project and the related blog post is finished, have a seat and take a look at the previous episodes of the series on dev.to: <br>
+[![Read more on dev.to](https://img.shields.io/badge/Read%20more%20on-dev.to-0A0A0A?style=for-the-badge&logo=devdotto&logoColor=white)](https://dev.to/levente-slajcho/series/41278)
 
 # Segment Vehicle LiDAR - U-Net Baseline
 
