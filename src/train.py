@@ -17,7 +17,7 @@ path = "../checkpoints"
 train_range = 0
 batch_size = 8
 num_epochs = 200
-use_cuda = True
+use_cuda =True
 
 def compute_iou(logits, masks, threshold=0.5, eps=1e-6):
     probs = torch.sigmoid(logits)
@@ -48,7 +48,7 @@ def train_one_epoch(model, loader, optimizer, criterion, device):
         loss.backward()
         optimizer.step()
 
-        running_loss = running_loss / len(loader.dataset)
+        running_loss += loss.item() * images.size(0)
 
     epoch_loss = running_loss / len(loader.dataset)
     return epoch_loss
@@ -77,6 +77,8 @@ def main(args):
     train_range = args.train_range
     batch_size = args.batch_size
     num_epochs = args.num_epochs
+    use_cuda = args.use_cuda
+    print("use_cuda is now ", use_cuda)
 
     print("Running training with "
           "train_range=", train_range,
@@ -93,7 +95,7 @@ def main(args):
     val_ratio = 0.2
     random_seed = 42
 
-    device = torch.device("cuda" if torch.cuda.is_available() and use_cuda else "cpu")
+    device = torch.device("cuda" if (torch.cuda.is_available() and use_cuda) else "cpu")
     print("Using device: ", device)
 
     # -------------
@@ -162,10 +164,19 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
+
+    def str_to_bool(value):
+        if value.lower() in ("true", "1", "yes"):
+            return True
+        elif value.lower() in ("false", "0", "no"):
+            return False
+        else:
+            raise ValueError("Expected true/false")
+
     parser.add_argument("--train_range", type=int, default=1)
     parser.add_argument("--batch_size", type=int, default=2)
     parser.add_argument("--num_epochs", type=int, default=100)
-    parser.add_argument("--use_cuda", type=bool, default=True)
+    parser.add_argument("--use_cuda", type=str_to_bool, default=True)
 
     args = parser.parse_args()
     main(args)
