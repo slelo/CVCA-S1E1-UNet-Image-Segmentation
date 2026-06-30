@@ -61,4 +61,9 @@ class CocoSegDataset(Dataset):
         image = torch.from_numpy(image).permute(2, 0, 1).float()
         mask = torch.from_numpy(mask).float().unsqueeze(0).float()
 
+        # For debugging:
+        # print("mask min:", mask.min().item())
+        # print("mask max:", mask.max().item())
+        # print("unique mask values:", torch.unique(mask))
+
         return image, mask

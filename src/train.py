@@ -12,20 +12,7 @@ import argparse
 
 path = "../checkpoints"
 
-# CONTROLS
-# DO NOT change them here, pass them instead as parameters in the Jupyter Notebooks
-# train_range sets the range of the images to
-# train the model (0 means all image should be used for training)
-train_range = 0
-# batch_size hyperparameter controls the number of training examples
-# processed by a model before the model's weights are updates
-batch_size = 8
-# num_epochs hyperparameter controls how many training cycles we
-# want to have over the range of train_range
-num_epochs = 200
-# CUDA should be used if possible to accelerate training. Change it to False in case
-# of unexpected errors or for debugging
-use_cuda =True
+
 
 
 def compute_iou(logits, masks, threshold=0.5, eps=1e-6):
@@ -41,10 +28,15 @@ def compute_iou(logits, masks, threshold=0.5, eps=1e-6):
     probs = torch.sigmoid(logits)
     preds = (probs > threshold).float()
 
+    masks = (masks > 0).float()
+
+    assert preds.shape == masks.shape, f"Shape mismatch: preds {preds.shape}, masks {masks.shape}"
+
     intersection = (preds * masks).sum()
     union = preds.sum() + masks.sum() - intersection
 
     iou = (intersection + eps) / (union + eps)
+
     return iou.item()
 
 
@@ -75,14 +67,16 @@ def train_one_epoch(model, loader, optimizer, criterion, device):
 
         iou = compute_iou(logits, masks)
 
+        train_batch_size = images.size(0)
+
         #backward propagation
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
         #calculating the loss
-        running_loss += loss.item() * batch_size
-        running_iou += iou * batch_size
+        running_loss += loss.item() * train_batch_size
+        running_iou += iou * train_batch_size
 
 
     epoch_loss = running_loss / len(loader.dataset)
@@ -113,11 +107,12 @@ def validate_one_epoch(model, loader, criterion, device):
         logits = model(images)
         loss =criterion(logits, masks)
 
+        val_batch_size = images.size(0)
         iou = compute_iou(logits, masks)
 
         # calculating the loss
-        running_loss += loss.item() * batch_size
-        running_iou += iou * batch_size
+        running_loss += loss.item() * val_batch_size
+        running_iou += iou * val_batch_size
 
     epoch_loss = running_loss / len(loader.dataset)
     epoch_iou = running_iou / len(loader.dataset)
@@ -236,9 +231,27 @@ if __name__ == "__main__":
         else:
             raise ValueError("Expected true/false")
 
-    parser.add_argument("--train_range", type=int, default=1)
-    parser.add_argument("--batch_size", type=int, default=2)
-    parser.add_argument("--num_epochs", type=int, default=100)
+    #Default values:
+
+    # train_range
+    # train_range sets the range of the images to
+    # train the model (0 means all image should be used for training)
+
+
+    # batch_size
+    # batch_size hyperparameter controls the number of training examples
+    # processed by a model before the model's weights are updates
+
+    # num_epochs
+    # num_epochs hyperparameter controls how many training cycles we
+    # want to have over the range of train_range
+
+    # use_cuda
+    # CUDA should be used if possible to accelerate training. Change it to False in case
+    # of unexpected errors or for debugging
+    parser.add_argument("--train_range", type=int, default=0)
+    parser.add_argument("--batch_size", type=int, default=8)
+    parser.add_argument("--num_epochs", type=int, default=200)
     parser.add_argument("--use_cuda", type=str_to_bool, default=True)
 
     args = parser.parse_args()
