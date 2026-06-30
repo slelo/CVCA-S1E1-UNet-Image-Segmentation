@@ -1,4 +1,6 @@
 # About
+_Updated 30 June 2026_
+
 This repository is part of the second episode of my newly started Computer Vision Code-Along blog post series. <br>
 
 [![Read more on dev.to](https://img.shields.io/badge/Read%20more%20on-dev.to-0A0A0A?style=for-the-badge&logo=devdotto&logoColor=white)](https://dev.to/levente-slajcho/image-segmentation-with-u-net-computer-vision-code-along-series-s1e1-hmo)
