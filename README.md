@@ -1,5 +1,5 @@
 # About
-_Updated 01 July 2026_
+_Last update: 01 July 2026_
 
 This repository is part of the second episode of my newly started Computer Vision Code-Along blog post series. <br>
 
